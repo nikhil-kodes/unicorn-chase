@@ -37,7 +37,7 @@ export default function RulebookPage() {
             The <span className="text-primary italic">Unicorn</span> Chase
           </h1>
           <p className="text-secondary text-lg font-medium italic opacity-70">
-            "Think like a Startup. Move like a Wolfpack."
+            &quot;Think like a Startup. Move like a Wolfpack.&quot;
           </p>
         </header>
 
@@ -276,7 +276,7 @@ export default function RulebookPage() {
         <footer className="card p-8 bg-accent-gold/[0.02] border-accent-gold/10 text-center space-y-4">
           <div className="chip border-accent-gold/20 text-accent-gold mx-auto">FINAL RULE</div>
           <p className="text-secondary text-sm leading-relaxed max-w-lg mx-auto italic">
-            "Breaking rules may result in token penalties, time penalties, or disqualification. The Organizing Committee reserves the right to make final decisions on all matters. All decisions by the President are binding and final."
+            &quot;Breaking rules may result in token penalties, time penalties, or disqualification. The Organizing Committee reserves the right to make final decisions on all matters. All decisions by the President are binding and final.&quot;
           </p>
           <div className="pt-6">
             <Link href="/register" className="btn-primary flex items-center justify-center gap-2 group max-w-xs mx-auto">

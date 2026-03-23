@@ -1,4 +1,5 @@
 import { LogOut } from 'lucide-react'
+import Image from 'next/image'
 
 export default function RoleHeader({ roleName, roleType }: { roleName: string, roleType: 'zone' | 'bm' | 'vc' | 'admin' }) {
   const config = {
@@ -14,7 +15,7 @@ export default function RoleHeader({ roleName, roleType }: { roleName: string, r
     <header className="border-b border-white/[0.04] bg-base/80 backdrop-blur-xl">
       <div className="px-6 md:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <img src="/logo.jpg" alt="Logo" className="w-8 h-8 rounded-lg" />
+          <Image src="/logo.jpg" alt="Logo" width={32} height={32} className="rounded-lg" />
           <div className="w-px h-6 bg-white/[0.06]" />
           <h1 className={`font-display font-bold text-base tracking-tight ${c.color}`}>
             {roleName}

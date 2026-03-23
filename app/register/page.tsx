@@ -75,7 +75,7 @@ export default function RegisterPortalPage() {
             Join the <span className="text-gradient">Chase</span>
           </h1>
           <p className="text-secondary text-lg max-w-lg leading-relaxed">
-            Select your role to get started. Team registration depends on the event organizer's toggle.
+            Select your role to get started. Team registration depends on the event organizer&apos;s toggle.
           </p>
         </div>
 
