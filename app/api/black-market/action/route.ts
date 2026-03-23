@@ -4,6 +4,8 @@ import { NextResponse } from 'next/server'
 import { getServiceRoleClient } from '@/lib/supabase/admin'
 import { getUserRole } from '@/lib/auth/getRole'
 
+export const dynamic = 'force-dynamic'
+ 
 export async function POST(req: Request) {
   try {
     const supabase = createRouteHandlerClient({ cookies })

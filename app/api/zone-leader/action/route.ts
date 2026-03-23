@@ -5,6 +5,8 @@ import { getServiceRoleClient } from '@/lib/supabase/admin'
 import { getUserRole } from '@/lib/auth/getRole'
 import { STAGE_POINTS, STAGE_ORDER } from '@/lib/utils/stages'
 
+export const dynamic = 'force-dynamic'
+ 
 export async function POST(req: Request) {
   try {
     const supabase = createRouteHandlerClient({ cookies })

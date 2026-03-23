@@ -3,6 +3,8 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { getUserRole } from '@/lib/auth/getRole'
 
+export const dynamic = 'force-dynamic'
+ 
 export async function GET(req: Request) {
   const supabase = createRouteHandlerClient({ cookies })
   const { data: { session } } = await supabase.auth.getSession()
