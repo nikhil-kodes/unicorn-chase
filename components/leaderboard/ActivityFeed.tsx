@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { subscribeToEvents } from '@/lib/realtime/channels'
 import { GameEvent } from '@/types'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -14,16 +13,19 @@ export default function ActivityFeed({ initialEvents }: ActivityFeedProps) {
   const feedEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Keep feed scrolled to top or auto-scroll
-    const channel = subscribeToEvents((payload) => {
-      const newEvent = payload.new as GameEvent
-      
-      // Skip broadcasts or internal end events from the public feed
-      if (newEvent.metadata?.isBroadcast || newEvent.metadata?.isEndEvent) return
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch('/api/events')
+        const data = await res.json()
+        if (Array.isArray(data)) setEvents(data)
+      } catch (err) {
+        console.error('Events polling failed:', err)
+      }
+    }
 
-      setEvents((prev) => [newEvent, ...prev].slice(0, 50)) // Keep last 50 events
-    })
-    return () => { channel.unsubscribe() }
+    fetchEvents() // Immediate load
+    const interval = setInterval(fetchEvents, 10000)
+    return () => clearInterval(interval)
   }, [])
 
   const formatMessage = (ev: GameEvent) => {

@@ -19,8 +19,8 @@ export default function BlackMarketDashboard() {
 
   useEffect(() => {
     fetch('/api/teams').then(res => res.json()).then(setTeams)
-    const channel = subscribeToLeaderboard(() => { fetch('/api/teams').then(res => res.json()).then(setTeams) })
-    return () => { channel.unsubscribe() }
+    const channelPromise = subscribeToLeaderboard(() => { fetch('/api/teams').then(res => res.json()).then(setTeams) })
+    return () => { channelPromise.then(c => c?.unsubscribe()) }
   }, [])
 
   const selectedTeam = teams.find(t => t.id === selectedId)

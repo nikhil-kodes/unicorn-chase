@@ -16,10 +16,10 @@ export default function ZoneLeaderDashboard() {
 
   useEffect(() => {
     fetch('/api/teams').then(res => res.json()).then(setTeams)
-    const channel = subscribeToLeaderboard(() => {
+    const channelPromise = subscribeToLeaderboard(() => {
       fetch('/api/teams').then(res => res.json()).then(setTeams)
     })
-    return () => { channel.unsubscribe() }
+    return () => { channelPromise.then(c => c?.unsubscribe()) }
   }, [])
 
   const selectedTeam = teams.find(t => t.id === selectedId)

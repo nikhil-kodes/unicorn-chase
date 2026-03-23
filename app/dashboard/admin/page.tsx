@@ -22,8 +22,8 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchState()
-    const channel = subscribeToLeaderboard(() => fetchState())
-    return () => { channel.unsubscribe() }
+    const channelPromise = subscribeToLeaderboard(() => fetchState())
+    return () => { channelPromise.then(c => c?.unsubscribe()) }
   }, [])
 
   const handleStartEvent = async () => {

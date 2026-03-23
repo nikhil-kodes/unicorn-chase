@@ -35,9 +35,8 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
   }, { toasts: [] })
 
   useEffect(() => {
-    const channel = subscribeToEvents((payload) => {
+    const channelPromise = subscribeToEvents((payload) => {
       const newEvent = payload.new as GameEvent
-      
       const toastPayload: ToastPayload = {
         id: newEvent.id, // using db row id
         eventType: newEvent.event_type,
@@ -52,15 +51,12 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
       dispatch({ type: 'ADD_TOAST', payload: toastPayload })
       
       if (newEvent.metadata?.isEndEvent) {
-        // If the event has ended, we force a refresh so all clients pick up the new state
         setTimeout(() => window.location.reload(), 3000)
       } else if (newEvent.metadata?.isBroadcast) {
-        // Broadcasts stay for 15 seconds
         setTimeout(() => {
           dispatch({ type: 'REMOVE_TOAST', id: newEvent.id })
         }, 15000)
       } else {
-        // Normal toasts auto dismiss after 4 seconds
         setTimeout(() => {
           dispatch({ type: 'REMOVE_TOAST', id: newEvent.id })
         }, 4000)
@@ -68,7 +64,7 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
     })
 
     return () => {
-      channel.unsubscribe()
+      channelPromise.then(c => c?.unsubscribe())
     }
   }, [])
 

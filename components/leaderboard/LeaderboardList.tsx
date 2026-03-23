@@ -1,19 +1,29 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { subscribeToLeaderboard } from '@/lib/realtime/channels'
+import { createClient } from '@/lib/supabase/client'
 import TeamCard from './TeamCard'
 
 export default function LeaderboardList({ initialTeams }: { initialTeams: any[] }) {
   const [teams, setTeams] = useState<any[]>(initialTeams)
+  const supabase = createClient()
 
   useEffect(() => {
-    const channel = subscribeToLeaderboard(() => {
-      fetch('/api/teams')
-        .then(res => res.json())
-        .then(data => setTeams(data))
-    })
-    return () => { channel.unsubscribe() }
+    console.log('Open Realtime channels:', supabase.getChannels())
+    
+    const fetchLeaderboard = async () => {
+      try {
+        const res = await fetch('/api/leaderboard')
+        const data = await res.json()
+        if (Array.isArray(data)) setTeams(data)
+      } catch (err) {
+        console.error('Polling failed:', err)
+      }
+    }
+
+    fetchLeaderboard() // Immediate first load
+    const interval = setInterval(fetchLeaderboard, 10000)
+    return () => clearInterval(interval)
   }, [])
 
   return (
