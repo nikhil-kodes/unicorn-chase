@@ -14,7 +14,7 @@ export default function RoleHeader({ roleName, roleType }: { roleName: string, r
     <header className="border-b border-white/[0.04] bg-base/80 backdrop-blur-xl">
       <div className="px-6 md:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <span className="text-xl">🦄</span>
+          <img src="/logo.jpg" alt="Logo" className="w-8 h-8 rounded-lg" />
           <div className="w-px h-6 bg-white/[0.06]" />
           <h1 className={`font-display font-bold text-base tracking-tight ${c.color}`}>
             {roleName}

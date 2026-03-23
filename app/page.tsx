@@ -44,7 +44,7 @@ export default async function Home() {
       <nav className="sticky top-0 z-50 border-b border-white/[0.04] bg-base/80 backdrop-blur-xl">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-xl">🦄</span>
+            <img src="/logo.jpg" alt="Logo" className="w-10 h-10 rounded-xl" />
             <span className="font-display font-bold text-lg tracking-tight">Unicorn Chase</span>
           </div>
           <div className="flex items-center gap-3">

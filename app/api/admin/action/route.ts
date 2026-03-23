@@ -69,6 +69,11 @@ export async function POST(req: Request) {
         metadata: { isEndEvent: true }
       })
     }
+    else if (actionType === 'toggle_registration') {
+      const { isOpen } = body
+      const { error } = await adminAuthClient.from('app_config').upsert({ key: 'registrations_open', value: String(isOpen) })
+      if (error) throw error
+    }
     else {
       return NextResponse.json({ error: 'Invalid action type' }, { status: 400 })
     }

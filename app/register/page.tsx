@@ -1,7 +1,10 @@
-import Link from 'next/link'
-import { Users, Shield, Bomb, Briefcase, ArrowRight } from 'lucide-react'
+'use client'
 
-const roles = [
+import Link from 'next/link'
+import { useState, useEffect } from 'react'
+import { Users, Shield, Bomb, Briefcase, ArrowRight, Lock } from 'lucide-react'
+
+const initialRoles = [
   {
     name: 'Team',
     description: 'Create a squad of 1–4 members and compete.',
@@ -10,6 +13,7 @@ const roles = [
     gradient: 'from-violet-500/20 to-purple-600/20',
     border: 'group-hover:border-violet-500/30',
     iconBg: 'bg-violet-500/10 text-violet-400',
+    isTeam: true,
   },
   {
     name: 'Zone Leader',
@@ -41,6 +45,17 @@ const roles = [
 ]
 
 export default function RegisterPortalPage() {
+  const [registrationsOpen, setRegistrationsOpen] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    fetch('/api/api-config')
+      .then(res => res.json())
+      .then(data => {
+        setRegistrationsOpen(data.registrations_open === 'true')
+      })
+      .catch(() => setRegistrationsOpen(false))
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16 relative">
       {/* Background */}
@@ -59,30 +74,45 @@ export default function RegisterPortalPage() {
           <h1 className="text-4xl md:text-5xl font-display font-bold tracking-tight">
             Join the <span className="text-gradient">Chase</span>
           </h1>
-          <p className="text-secondary text-lg max-w-lg">
-            Select your role to get started. Registration locks when the event begins.
+          <p className="text-secondary text-lg max-w-lg leading-relaxed">
+            Select your role to get started. Team registration depends on the event organizer's toggle.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {roles.map((role) => (
-            <Link
-              key={role.name}
-              href={role.href}
-              className={`group card p-6 flex items-start gap-4 hover:bg-white/[0.02] transition-all duration-300 ${role.border}`}
-            >
-              <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${role.iconBg} transition-transform group-hover:scale-110`}>
-                <role.icon className="w-5 h-5" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between mb-1">
-                  <h2 className="font-display font-bold text-lg text-primary">{role.name}</h2>
-                  <ArrowRight className="w-4 h-4 text-muted group-hover:text-secondary group-hover:translate-x-0.5 transition-all" />
+          {initialRoles.map((role) => {
+            const isTeamLocked = role.isTeam && registrationsOpen === false
+            
+            return (
+              <Link
+                key={role.name}
+                href={isTeamLocked ? '#' : role.href}
+                className={`group card p-6 flex items-start gap-4 transition-all duration-300 ${
+                  isTeamLocked 
+                    ? 'opacity-60 grayscale cursor-not-allowed border-white/[0.04]' 
+                    : `hover:bg-white/[0.02] ${role.border}`
+                }`}
+                onClick={(e) => { if (isTeamLocked) e.preventDefault() }}
+              >
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
+                  isTeamLocked ? 'bg-white/[0.05] text-muted' : role.iconBg
+                } transition-transform group-hover:scale-110`}>
+                  {isTeamLocked ? <Lock className="w-5 h-5" /> : <role.icon className="w-5 h-5" />}
                 </div>
-                <p className="text-sm text-secondary leading-relaxed">{role.description}</p>
-              </div>
-            </Link>
-          ))}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-1">
+                    <h2 className="font-display font-bold text-lg text-primary">{role.name}</h2>
+                    {!isTeamLocked && <ArrowRight className="w-4 h-4 text-muted group-hover:text-secondary group-hover:translate-x-0.5 transition-all" />}
+                  </div>
+                  <p className="text-sm text-secondary leading-relaxed">
+                    {isTeamLocked 
+                      ? 'Registration is currently locked by the admin.' 
+                      : role.description}
+                  </p>
+                </div>
+              </Link>
+            )
+          })}
         </div>
 
         <p className="mt-10 text-center text-sm text-muted">

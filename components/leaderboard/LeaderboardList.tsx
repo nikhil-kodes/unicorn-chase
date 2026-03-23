@@ -9,8 +9,6 @@ export default function LeaderboardList({ initialTeams }: { initialTeams: any[] 
   const supabase = createClient()
 
   useEffect(() => {
-    console.log('Open Realtime channels:', supabase.getChannels())
-    
     const fetchLeaderboard = async () => {
       try {
         const res = await fetch('/api/leaderboard')

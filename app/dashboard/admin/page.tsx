@@ -5,19 +5,43 @@ import { useState, useEffect } from 'react'
 import RoleHeader from '@/components/layout/RoleHeader'
 import { Button } from '@/components/ui/Button'
 import { subscribeToLeaderboard } from '@/lib/realtime/channels'
-import { Zap, Users, Activity, Settings, Trash2 } from 'lucide-react'
+import { Zap, Users, Activity, Settings, Trash2, Lock, Unlock } from 'lucide-react'
 
 export default function AdminDashboard() {
   const [teams, setTeams] = useState<Team[]>([])
   const [loading, setLoading] = useState(false)
   const [eventStarted, setEventStarted] = useState(false)
   const [eventEnded, setEventEnded] = useState(false)
+  const [registrationsOpen, setRegistrationsOpen] = useState(false)
   const [broadcastMessage, setBroadcastMessage] = useState('')
   const [activeTab, setActiveTab] = useState('overview')
 
   const fetchState = async () => {
-    const t = await fetch('/api/teams').then(res => res.json())
-    setTeams(t)
+    try {
+      const t = await fetch('/api/teams').then(res => res.json())
+      setTeams(t)
+      
+      const config = await fetch('/api/api-config').then(res => res.json())
+      setEventStarted(config.event_started === 'true')
+      setEventEnded(config.event_ended === 'true')
+      setRegistrationsOpen(config.registrations_open === 'true')
+    } catch(e) { 
+      console.error('Error fetching state:', e)
+    }
+  }
+
+  const handleToggleRegistration = async () => {
+    setLoading(true)
+    const success = await fetch('/api/admin/action', { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' }, 
+      body: JSON.stringify({ actionType: 'toggle_registration', isOpen: !registrationsOpen }) 
+    }).then(res => res.ok)
+    
+    if (success) {
+      setRegistrationsOpen(!registrationsOpen)
+    }
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -176,6 +200,26 @@ export default function AdminDashboard() {
 
           {activeTab === 'controls' && (
             <div className="max-w-md animate-fade-in space-y-6">
+              {/* Registration Toggle */}
+              <div className="card p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-display font-bold mb-1">Team Registration</h3>
+                    <p className="text-sm text-muted">Allow or block new team sign-ups.</p>
+                  </div>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${registrationsOpen ? 'bg-accent-finish/10 text-accent-finish' : 'bg-accent-danger/10 text-accent-danger'}`}>
+                    {registrationsOpen ? <Unlock className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
+                  </div>
+                </div>
+                <Button
+                  variant={registrationsOpen ? 'destructive' : 'primary'}
+                  size="lg" className="w-full"
+                  isLoading={loading}
+                  onClick={handleToggleRegistration}>
+                  {registrationsOpen ? '🔒 Close Registration' : '🔓 Open Registration'}
+                </Button>
+              </div>
+
               <div className="card p-6 space-y-4">
                 <div>
                   <h3 className="text-lg font-display font-bold mb-1">Event Lifecycle</h3>
