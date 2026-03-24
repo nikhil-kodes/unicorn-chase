@@ -3,6 +3,7 @@ import "./globals.css";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { EventProvider } from "@/context/EventContext";
 import ToastQueue from "@/components/popups/ToastQueue";
+import { Analytics } from '@vercel/analytics/next';
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
@@ -25,6 +26,7 @@ export default function RootLayout({
           {children}
           <ToastQueue />
         </EventProvider>
+        <Analytics />
       </body>
     </html>
   );
