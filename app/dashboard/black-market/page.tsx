@@ -3,6 +3,7 @@
 import { Team } from '@/types'
 import { useState, useEffect } from 'react'
 import TeamSelector from '@/components/dashboard/TeamSelector'
+import Sidebar from '@/components/dashboard/Sidebar'
 import RoleHeader from '@/components/layout/RoleHeader'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -16,6 +17,7 @@ export default function BlackMarketDashboard() {
   const [victimMode, setVictimMode] = useState(false)
   const [sabotageBuyerId, setSabotageBuyerId] = useState<string | null>(null)
   const [boostAmount, setBoostAmount] = useState('')
+  const [isSidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
     fetch('/api/teams').then(res => res.json()).then(setTeams)
@@ -49,7 +51,7 @@ export default function BlackMarketDashboard() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <RoleHeader roleName="Black Market" roleType="bm" />
+      <RoleHeader roleName="Black Market" roleType="bm" onMenuClick={() => setSidebarOpen(true)} />
 
       {victimMode && (
         <div className="w-full bg-accent-danger/10 border-b border-accent-danger/20 text-accent-danger font-bold text-center py-2.5 text-sm animate-pulse uppercase tracking-wider">
@@ -57,10 +59,10 @@ export default function BlackMarketDashboard() {
         </div>
       )}
 
-      <div className="flex-1 flex overflow-hidden">
-        <div className="w-80 shrink-0 h-full">
-          <TeamSelector teams={teams} selectedTeamId={selectedId} onSelect={setSelectedId} disabledTeams={victimMode ? [sabotageBuyerId!] : []} />
-        </div>
+      <div className="flex-1 flex overflow-hidden relative">
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)}>
+          <TeamSelector teams={teams} selectedTeamId={selectedId} onSelect={(id) => { setSelectedId(id); setSidebarOpen(false) }} disabledTeams={victimMode ? [sabotageBuyerId!] : []} />
+        </Sidebar>
 
         <div className="flex-1 h-full overflow-y-auto p-6 md:p-8">
           {selectedTeam ? (

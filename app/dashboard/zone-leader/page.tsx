@@ -3,6 +3,7 @@
 import { Team } from '@/types'
 import { useState, useEffect } from 'react'
 import TeamSelector from '@/components/dashboard/TeamSelector'
+import Sidebar from '@/components/dashboard/Sidebar'
 import RoleHeader from '@/components/layout/RoleHeader'
 import { Button } from '@/components/ui/Button'
 import { getNextStage } from '@/lib/utils/stages'
@@ -13,6 +14,7 @@ export default function ZoneLeaderDashboard() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [deductAmount, setDeductAmount] = useState('')
+  const [isSidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
     fetch('/api/teams').then(res => res.json()).then(setTeams)
@@ -33,10 +35,12 @@ export default function ZoneLeaderDashboard() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <RoleHeader roleName="Zone Leader" roleType="zone" />
+      <RoleHeader roleName="Zone Leader" roleType="zone" onMenuClick={() => setSidebarOpen(true)} />
 
-      <div className="flex-1 flex overflow-hidden">
-        <div className="w-80 shrink-0 h-full"><TeamSelector teams={teams} selectedTeamId={selectedId} onSelect={setSelectedId} /></div>
+      <div className="flex-1 flex overflow-hidden relative">
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)}>
+          <TeamSelector teams={teams} selectedTeamId={selectedId} onSelect={(id) => { setSelectedId(id); setSidebarOpen(false) }} />
+        </Sidebar>
 
         <div className="flex-1 h-full overflow-y-auto p-6 md:p-8">
           {selectedTeam ? (

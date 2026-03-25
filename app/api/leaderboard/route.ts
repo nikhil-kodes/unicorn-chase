@@ -19,7 +19,7 @@ export async function GET() {
         pause_until,
         route_marker,
         members:team_members(name, roll_number, branch, year, section),
-        progress:route_progress(stage, completed)
+        progress:route_progress(stage, completed, completed_at)
       `)
       .order('tokens', { ascending: false })
       .order('created_at', { ascending: true })

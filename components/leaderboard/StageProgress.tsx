@@ -7,11 +7,23 @@ import { motion } from 'framer-motion'
 export default function StageProgress({ progress }: { progress: any[] }) {
   let activeFound = false
 
+  const formatIST = (dateStr: string) => {
+    if (!dateStr) return ''
+    return new Intl.DateTimeFormat('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    }).format(new Date(dateStr))
+  }
+
   return (
     <div className="flex items-center gap-0.5">
       {STAGE_ORDER.map((stageName, index) => {
         const p = progress?.find((x: any) => x.stage === stageName)
         const isCompleted = p?.completed
+        const completedAt = p?.completed_at
         const isNext = !isCompleted && !activeFound
         if (isNext) activeFound = true
 
@@ -19,8 +31,11 @@ export default function StageProgress({ progress }: { progress: any[] }) {
           <div key={stageName} className="flex items-center">
             <div className="relative group">
               {/* Tooltip */}
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-elevated text-[10px] font-mono font-bold uppercase text-secondary px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/[0.06]">
-                {stageName}
+              <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-elevated text-[10px] font-mono font-bold uppercase text-secondary px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/[0.06] flex flex-col items-center">
+                <span>{stageName}</span>
+                {isCompleted && completedAt && (
+                   <span className="text-[9px] text-accent-glow mt-0.5">{formatIST(completedAt)}</span>
+                )}
               </div>
 
               <div
